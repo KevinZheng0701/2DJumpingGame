@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class UIScript : MonoBehaviour
 {
+    public bool scalingUp = true;
+
     public Text textScore;
     public Text currentScore;
     public Text highestScore;
@@ -18,7 +20,7 @@ public class UIScript : MonoBehaviour
     public GameObject tutorialScreen;
     public GameObject pauseScreen;
     public GameObject gameOverScreen;
-    
+
     public LogicScript logic;
 
     private void Awake()
