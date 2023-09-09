@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerScript : MonoBehaviour
 {
-    public bool alienStatus = true;
+    public bool playerStatus = true;
     public bool inScreen;
     public float velocitySpeed = 10;
     public Rigidbody2D rigidBody;
@@ -26,7 +26,7 @@ public class PlayerScript : MonoBehaviour
     void Update()
     {
         inScreen = transform.position.y < 12 && transform.position.y > -12;
-        if (Input.GetKeyDown(KeyCode.Space) && alienStatus)
+        if (Input.GetKeyDown(KeyCode.Space) && playerStatus)
         {
             rigidBody.velocity = Vector2.up * velocitySpeed;
             logic.musicScript.playJumpSound();
@@ -48,14 +48,14 @@ public class PlayerScript : MonoBehaviour
     }
     public void pausePlayer()
     {
-        alienStatus = false;
+        playerStatus = false;
         rigidBody.gravityScale = 0;
         rigidBody.velocity = Vector2.zero;
         animator.SetBool("Move", false);
     }
     public void unPausePlayer()
     {
-        alienStatus = true;
+        playerStatus = true;
         rigidBody.gravityScale = 2;
         animator.SetBool("Move", true);
     }

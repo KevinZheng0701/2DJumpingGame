@@ -11,7 +11,7 @@ public class LogicScript : MonoBehaviour
     public int playerScore = 0;
     public int highScore;
     private float pointsDuration = 10;
-    [SerializeField] private float remainingTime = 0;
+    private float remainingTime = 0;
     private float activationTime;
 
     public GameObject asteroid;
@@ -101,7 +101,7 @@ public class LogicScript : MonoBehaviour
     private void togglePause()
     {
         spawnerScript.spawner = !spawnerScript.spawner;
-        if (playerScript.alienStatus)
+        if (playerScript.playerStatus)
         {
             playerScript.pausePlayer();
             isPaused = true;

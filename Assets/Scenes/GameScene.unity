@@ -1946,7 +1946,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cf061b4574b6484c86bd0ba43b257a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  alienStatus: 1
+  playerStatus: 1
   inScreen: 0
   velocitySpeed: 10
   rigidBody: {fileID: 1084698685}
@@ -2175,7 +2175,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -550, y: 350}
+  m_AnchoredPosition: {x: -580, y: 360}
   m_SizeDelta: {x: 700, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1216947851
@@ -4353,7 +4353,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 873.5, y: 441.5}
+  m_AnchoredPosition: {x: 900, y: 470}
   m_SizeDelta: {x: 25, y: 25}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1929374027
@@ -4698,7 +4698,6 @@ MonoBehaviour:
   pointBoostedActivated: 0
   playerScore: 0
   highScore: 0
-  remainingTime: 0
   asteroid: {fileID: 7633044134291792621, guid: ed35c82b9c80f4ca2998944fbae94aa9, type: 3}
   playerScript: {fileID: 0}
   spawnerScript: {fileID: 0}
