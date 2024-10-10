@@ -15,21 +15,18 @@ public class DifficultyScript : MonoBehaviour
     public DifficultyLevel level = DifficultyLevel.Easy;
     private int[] difficultyThresholds = { 100, 300, 600, 1000 };
     private float[] asteriodSpawnRates = { 4f, 3f, 2f, 1.5f };
+    [SerializeField] LogicScript logic;
+    [SerializeField] SpawnerScript spawnerScript;
 
-    public LogicScript logic;
-
-    private void Awake()
-    {
-        logic = GetComponent<LogicScript>();
-    }
     void Update()
     {
-        if (checkPoints())
+        if (CheckPoints())
         {
-            changeDifficult();
+            ChangeDifficult();
         }
     }
-    private bool checkPoints()
+
+    private bool CheckPoints()
     {
         for (int i = difficultyThresholds.Length - 1; i >= 0; i--)
         {
@@ -41,12 +38,13 @@ public class DifficultyScript : MonoBehaviour
         }
         return false;
     }
-    private void changeDifficult()
+
+    private void ChangeDifficult()
     {
         int levelIndex = (int)level;
-        if ( levelIndex >= 0)
+        if (levelIndex >= 0)
         {
-            logic.spawnerScript.asteriodSpawnRate = asteriodSpawnRates[levelIndex];
+            spawnerScript.asteriodSpawnRate = asteriodSpawnRates[levelIndex];
         }
     }
 }

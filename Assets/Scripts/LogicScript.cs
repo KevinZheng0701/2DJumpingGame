@@ -13,52 +13,48 @@ public class LogicScript : MonoBehaviour
     private float pointsDuration = 10;
     private float remainingTime = 0;
     private float activationTime;
+    [SerializeField] GameObject asteroid;
+    [SerializeField] PlayerScript playerScript;
+    [SerializeField] SpawnerScript spawnerScript;
+    [SerializeField] MusicScript musicScript;
+    [SerializeField] UIScript uiScript;
 
-    public GameObject asteroid;
-
-    public PlayerScript playerScript;
-    public SpawnerScript spawnerScript;
-    public MusicScript musicScript;
-    public UIScript uiScript;
-
-    private void Awake()
-    {
-        playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
-        spawnerScript = GameObject.FindGameObjectWithTag("Spawner").GetComponent<SpawnerScript>();
-        musicScript = GameObject.FindGameObjectWithTag("Music").GetComponent<MusicScript>();
-        uiScript = GetComponent<UIScript>();
-    }
     void Start()
     {
         highScore = PlayerPrefs.GetInt("HighScore", 0);
-        musicScript.playSoundTrack();
+        musicScript.PlaySoundTrack();
     }
+
     void Update()
     {
         if (pointBoostedActivated && !isPaused)
         {
-            remainingTime = calculateRemainingTime(activationTime, pointsDuration);
+            remainingTime = CalculateRemainingTime(activationTime, pointsDuration);
             if (remainingTime <= 0)
             {
-                deactivatePointsMultipler();
+                DeactivatePointsMultipler();
             }
         }
     }
-    public void addScore(int value)
+
+    public void AddScore(int value)
     {
         playerScore += value;
         uiScript.textScore.text = playerScore.ToString();
     }
-    private void resetScore()
+
+    public void ResetScore()
     {
         playerScore = 0;
         uiScript.textScore.text = playerScore.ToString();
     }
-    private void updateCurrentScore()
+
+    public void UpdateCurrentScore()
     {
         uiScript.currentScore.text = uiScript.textScore.text;
     }
-    private void updateHighScore()
+
+    public void UpdateHighScore()
     {
         if (playerScore > highScore)
         {
@@ -67,68 +63,75 @@ public class LogicScript : MonoBehaviour
             uiScript.highestScore.text = highScore.ToString();
         }
     }
-    private void startGame()
+
+    public void StartGame()
     {
         isPaused = false;
-        uiScript.closeMainMenu();
-        playerScript.unPausePlayer();
+        uiScript.CloseMainMenu();
+        playerScript.UnPausePlayer();
         spawnerScript.spawner = true;
     }
-    private void restartGame()
+
+    public void RestartGame()
     {
         gameOverTriggered = false;
         isPaused = false;
         spawnerScript.spawner = true;
-        playerScript.resetPlayer();
-        uiScript.closeGameOverScreen();
-        resetScore();
+        playerScript.ResetPlayer();
+        uiScript.CloseGameOverScreen();
+        ResetScore();
     }
-    public void gameOver()
-    {   
+
+    public void GameOver()
+    {
         gameOverTriggered = true;
         isPaused = true;
-        deactivatePointsMultipler();
-        playerScript.pausePlayer();
-        musicScript.playGameOverSound();
-        uiScript.openGameOverScreen();
-        updateCurrentScore();
-        updateHighScore();
+        DeactivatePointsMultipler();
+        playerScript.PausePlayer();
+        musicScript.PlayGameOverSound();
+        uiScript.OpenGameOverScreen();
+        UpdateCurrentScore();
+        UpdateHighScore();
     }
-    private void resetGame()
+
+    public void ResetGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
-    private void togglePause()
+
+    public void TogglePause()
     {
         spawnerScript.spawner = !spawnerScript.spawner;
         if (playerScript.playerStatus)
         {
-            playerScript.pausePlayer();
+            playerScript.PausePlayer();
             isPaused = true;
-            uiScript.openPauseScreen();
-            }
+            uiScript.OpenPauseScreen();
+        }
         else
         {
-            playerScript.unPausePlayer();
+            playerScript.UnPausePlayer();
             isPaused = false;
-            uiScript.closePauseScreen();
+            uiScript.ClosePauseScreen();
         }
-        updateCurrentScore();
-        updateHighScore();
+        UpdateCurrentScore();
+        UpdateHighScore();
     }
-    public void activatePointsMultiplier()
+
+    public void ActivatePointsMultiplier()
     {
         activationTime = Time.time;
         pointBoostedActivated = true;
-        uiScript.boostText.text = "Double Points";
-        uiScript.displayBoost();
+        uiScript.DisplayBoost("Double Points");
     }
-    private void deactivatePointsMultipler()
+
+    public void DeactivatePointsMultipler()
     {
         pointBoostedActivated = false;
-        uiScript.hideBoost();
+        uiScript.HideBoost();
     }
-    public float calculateRemainingTime(float activationTime, float duration)
+
+    public float CalculateRemainingTime(float activationTime, float duration)
     {
         return activationTime + duration - Time.time;
     }

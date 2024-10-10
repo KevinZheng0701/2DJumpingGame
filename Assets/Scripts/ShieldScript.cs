@@ -6,59 +6,61 @@ public class ShieldScript : MonoBehaviour
 {
     public bool shieldStatus = false;
     private float shieldDuration = 10;
-    [SerializeField] private float remainingTime = 0;
+    private float remainingTime = 0;
     private float activationTime;
+    [SerializeField] Animator animator;
+    [SerializeField] LogicScript logic;
+    [SerializeField] MusicScript musicScript;
+    [SerializeField] UIScript uiScript;
+    [SerializeField] PlayerScript playerScript;
 
-    public Animator animator;
-    public LogicScript logic;
-
-    private void Awake()
-    {
-        logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LogicScript>();
-    }
     void Start()
     {
         gameObject.SetActive(false);
     }
+
     void Update()
     {
-        if (!logic.playerScript.inScreen)
+        if (!playerScript.inScreen)
         {
             shieldStatus = false;
             gameObject.SetActive(false);
         }
         if (shieldStatus && !logic.isPaused)
         {
-            remainingTime = logic.calculateRemainingTime(activationTime, shieldDuration);
+            remainingTime = logic.CalculateRemainingTime(activationTime, shieldDuration);
             if (remainingTime <= 0)
             {
-                deactivateShield();
+                DeactivateShield();
             }
         }
     }
-    public void activateShield()
+
+    public void ActivateShield()
     {
         shieldStatus = true;
         animator.SetBool("ShieldActivated", true);
         gameObject.SetActive(true);
         activationTime = Time.time;
-        logic.musicScript.playShieldSound();
-        logic.uiScript.boostText.text = "Shield Activated";
-        logic.uiScript.displayBoost();
+        musicScript.PlayShieldSound();
+        uiScript.DisplayBoost("Shield Activated");
     }
-    private void deactivateShield()
+
+    private void DeactivateShield()
     {
         shieldStatus = false;
         animator.SetBool("ShieldActivated", false);
         StartCoroutine(delayDeactivation());
-        logic.musicScript.playBreakShieldSound();
-        logic.uiScript.hideBoost();
+        musicScript.PlayBreakShieldSound();
+        uiScript.HideBoost();
     }
+
     public IEnumerator delayDeactivation()
     {
         yield return new WaitForSeconds(0.25f);
         gameObject.SetActive(false);
     }
+
     public void OnTriggerEnter2D(Collider2D collision)
     {
         if (shieldStatus)
@@ -66,11 +68,11 @@ public class ShieldScript : MonoBehaviour
             if (collision.gameObject.name.Contains("Asteroid"))
             {
                 Destroy(collision.gameObject);
-                deactivateShield();
+                DeactivateShield();
             }
             else if (collision.gameObject.name.Contains("Sapphire"))
             {
-                activateShield();
+                ActivateShield();
             }
         }
     }

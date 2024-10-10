@@ -6,70 +6,66 @@ public class SpawnerScript : MonoBehaviour
 {
     public bool spawner = false;
     public bool spawnMultiplierActive = false;
-
-    public Transform Ores;
-    public Transform Gems;
-    public GameObject asteroid;
-
+    [SerializeField] Transform Ores;
+    [SerializeField] Transform Gems;
+    [SerializeField] GameObject asteroid;
     public float oreSpawnRate = 2;
     public float gemSpawnRate = 15;
     public float asteriodSpawnRate = 5;
     private float spawnRateMultiplier = 2;
     private float spawnMultiplierDuration = 10;
-    [SerializeField] private float remainingTime = 0;
     private float activationTime;
-
+    [SerializeField] private float remainingTime = 0;
     private float oreTimer;
     private float gemTimer;
     private float asteroidTimer;
     private float lastOreSpawnTime;
     private float lastGemSpawnTime;
     private float lastAsteroidSpawnTime;
+    [SerializeField] LogicScript logic;
+    [SerializeField] UIScript uiScript;
 
-    public LogicScript logic;
-
-    private void Awake()
-    {
-        logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LogicScript>();
-    }
     void Start()
     {
-        logic.uiScript.playButton.onClick.AddListener(playClicked);
-        logic.uiScript.replayButton.onClick.AddListener(playClicked);
+        uiScript.playButton.onClick.AddListener(PlayClicked);
+        uiScript.replayButton.onClick.AddListener(PlayClicked);
     }
+
     void Update()
     {
         if (logic.gameOverTriggered)
         {
-            stopSpawning();
+            StopSpawning();
         }
         if (spawner)
         {
-            spawn();
+            Spawn();
             if (spawnMultiplierActive && !logic.isPaused)
             {
-                remainingTime = logic.calculateRemainingTime(activationTime, spawnMultiplierDuration);
+                remainingTime = logic.CalculateRemainingTime(activationTime, spawnMultiplierDuration);
                 if (remainingTime <= 0)
                 {
-                    deactivateSpawnRateMultiplier();
+                    DeactivateSpawnRateMultiplier();
                 }
             }
-        }   
+        }
     }
 
-    private void playClicked()
+    private void PlayClicked()
     {
         lastOreSpawnTime = Time.time;
         lastAsteroidSpawnTime = Time.time;
         lastGemSpawnTime = Time.time;
-        spawnOre();
+        SpawnOre();
     }
-    private void stopSpawning()
+
+    private void StopSpawning()
     {
         spawner = false;
-        deactivateSpawnRateMultiplier();
+        DeactivateSpawnRateMultiplier();
     }
-    private void spawn()
+
+    private void Spawn()
     {
         float currentTime = Time.time;
         oreTimer = currentTime - lastOreSpawnTime;
@@ -77,97 +73,90 @@ public class SpawnerScript : MonoBehaviour
         asteroidTimer = currentTime - lastAsteroidSpawnTime;
         if (oreTimer >= oreSpawnRate)
         {
-            spawnOre();
+            SpawnOre();
             oreTimer = 0;
         }
         if (gemTimer >= gemSpawnRate)
         {
-            spawnGem();
+            SpawnGem();
             gemTimer = 0;
         }
         if (asteroidTimer >= asteriodSpawnRate)
         {
-            spawnAsteroid();
+            SpawnAsteroid();
             asteroidTimer = 0;
         }
     }
-    private void spawnOre()
+
+    private void SpawnOre()
     {
-        if (Ores != null && Ores.childCount > 0)
-        {
-            int randomNumber = Random.Range(0, Ores.childCount);
-            Transform randomOre = Ores.GetChild(randomNumber);
-            if (randomOre != null)
-            {
-                GameObject ore = randomOre.gameObject;
-                Vector3 oreScale = createRandomScale();
-                Quaternion oreRotation = createRandomRotation();
-                Vector3 orePosition = createRandomPosition();
-                GameObject spawnedOre = Instantiate(ore, orePosition, oreRotation);
-                spawnedOre.transform.localScale = oreScale;
-                lastOreSpawnTime = Time.time;
-            }
-        }
+        int randomNumber = Random.Range(0, Ores.childCount);
+        Transform randomOre = Ores.GetChild(randomNumber);
+        GameObject ore = randomOre.gameObject;
+        Vector3 oreScale = CreateRandomScale();
+        Quaternion oreRotation = CreateRandomRotation();
+        Vector3 orePosition = CreateRandomPosition();
+        GameObject spawnedOre = Instantiate(ore, orePosition, oreRotation);
+        spawnedOre.transform.localScale = oreScale;
+        lastOreSpawnTime = Time.time;
+
     }
-    private void spawnGem()
+
+    private void SpawnGem()
     {
-        if (Gems != null && Gems.childCount > 0)
-        {
-            int randomNumber = Random.Range(0, Gems.childCount);
-            Transform randomGem = Gems.GetChild(randomNumber);
-            if (randomGem != null)
-            {
-                GameObject gem = randomGem.gameObject;
-                Vector3 gemScale = createRandomScale();
-                Quaternion gemRotation = createRandomRotation();
-                Vector3 gemPosition = createRandomPosition();
-                GameObject spawnedGem = Instantiate(gem, gemPosition, gemRotation);
-                spawnedGem.transform.localScale = gemScale;
-                lastGemSpawnTime = Time.time;
-            }
-        }
+        int randomNumber = Random.Range(0, Gems.childCount);
+        Transform randomGem = Gems.GetChild(randomNumber);
+        GameObject gem = randomGem.gameObject;
+        Vector3 gemScale = CreateRandomScale();
+        Quaternion gemRotation = CreateRandomRotation();
+        Vector3 gemPosition = CreateRandomPosition();
+        GameObject spawnedGem = Instantiate(gem, gemPosition, gemRotation);
+        spawnedGem.transform.localScale = gemScale;
+        lastGemSpawnTime = Time.time;
     }
-    private void spawnAsteroid()
+
+    private void SpawnAsteroid()
     {
-        if (asteroid != null)
-        {
-            Vector3 asteroidScale = createRandomScale();
-            Quaternion asteroidRotation = createRandomRotation();
-            Vector3 asteroidPosition = createRandomPosition();
-            GameObject spawnedAsteroid = Instantiate(asteroid, asteroidPosition, asteroidRotation);
-            spawnedAsteroid.transform.localScale = asteroidScale;
-            lastAsteroidSpawnTime = Time.time;
-        }
+        Vector3 asteroidScale = CreateRandomScale();
+        Quaternion asteroidRotation = CreateRandomRotation();
+        Vector3 asteroidPosition = CreateRandomPosition();
+        GameObject spawnedAsteroid = Instantiate(asteroid, asteroidPosition, asteroidRotation);
+        spawnedAsteroid.transform.localScale = asteroidScale;
+        lastAsteroidSpawnTime = Time.time;
     }
-    private Vector3 createRandomScale()
+
+    private Vector3 CreateRandomScale()
     {
         Vector3 randomScale = new Vector3(Random.Range(0.7f, 1.2f), Random.Range(0.7f, 1.2f), 1.0f);
         return randomScale;
     }
-    private Quaternion createRandomRotation()
+
+    private Quaternion CreateRandomRotation()
     {
         Quaternion randomRotation = Quaternion.Euler(0, 0, Random.Range(0, 360));
         return randomRotation;
     }
-    private Vector3 createRandomPosition()
+
+    private Vector3 CreateRandomPosition()
     {
         Vector3 randomPosition = new Vector3(25, Random.Range(-10, 10), 0);
         return randomPosition;
     }
-    public void activateSpawnRateMultiplier()
+
+    public void ActivateSpawnRateMultiplier()
     {
         oreSpawnRate /= spawnRateMultiplier;
         spawnMultiplierActive = true;
         spawnMultiplierDuration = 10;
         activationTime = Time.time;
-        logic.uiScript.boostText.text = "Double Spawn Rate";
-        logic.uiScript.displayBoost();
+        uiScript.DisplayBoost("Double Spawn Rate");
     }
-    public void deactivateSpawnRateMultiplier()
+
+    public void DeactivateSpawnRateMultiplier()
     {
         oreSpawnRate = 2;
         spawnMultiplierActive = false;
         spawnMultiplierDuration = 0;
-        logic.uiScript.hideBoost();
+        uiScript.HideBoost();
     }
 }

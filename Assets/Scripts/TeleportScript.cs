@@ -5,24 +5,26 @@ using UnityEngine;
 public class TeleportScript : MonoBehaviour
 {
     private float backgroundWidth;
-    public Transform otherBackground;
+    [SerializeField] Transform otherBackground;
 
     void Start()
     {
         backgroundWidth = GetComponent<SpriteRenderer>().bounds.size.x;
     }
+
     void Update()
     {
-        if (shouldTeleport())
+        if (ShouldTeleport())
         {
-            teleportToZone();
+            TeleportToZone();
         }
     }
-    private bool shouldTeleport()
+
+    private bool ShouldTeleport()
     {
         return transform.position.x < -backgroundWidth;
     }
-    private void teleportToZone()
+    private void TeleportToZone()
     {
         Vector3 newPosition = otherBackground.position + Vector3.right * backgroundWidth;
         transform.position = newPosition;

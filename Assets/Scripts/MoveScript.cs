@@ -7,13 +7,13 @@ public class MoveScript : MonoBehaviour
     public bool movement = false;
     public float moveSpeed;
     private float deleteZone = -25;
+    private LogicScript logic;
 
-    public LogicScript logic;
-
-    private void Awake()
+    void Start()
     {
         logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LogicScript>();
     }
+
     void Update()
     {
         movement = !logic.isPaused;
@@ -31,7 +31,7 @@ public class MoveScript : MonoBehaviour
             if (gameObject.name != "Background")
             {
                 Destroy(gameObject);
-            } 
+            }
         }
     }
 }

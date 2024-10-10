@@ -5,45 +5,54 @@ using UnityEngine;
 public class CollisionScript : MonoBehaviour
 {
     public int scoreValue;
-    public LogicScript logic;
+    private LogicScript logic;
+    private MusicScript musicScript;
+    private ShieldScript shieldScript;
+    private SpawnerScript spawnerScript;
 
-    private void Awake()
+    void Start()
     {
         logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LogicScript>();
+        musicScript = GameObject.FindGameObjectWithTag("Music").GetComponent<MusicScript>();
+        spawnerScript = GameObject.FindGameObjectWithTag("Spawner").GetComponent<SpawnerScript>();
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        shieldScript = player.GetComponentInChildren<ShieldScript>(true);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        applyScoreAndSound();
-        applySpecialPowers();
+        ApplyScoreAndSound();
+        ApplySpecialPowers();
         Destroy(gameObject);
     }
-    private void applyScoreAndSound() 
+
+    private void ApplyScoreAndSound()
     {
         int score = logic.pointBoostedActivated ? 2 * scoreValue : scoreValue;
-        logic.addScore(score);
+        logic.AddScore(score);
         if (gameObject.name.Contains("Ruby") || gameObject.name.Contains("Emerald") || gameObject.name.Contains("Sapphire"))
         {
-            logic.musicScript.playBoostSound();
+            musicScript.PlayBoostSound();
         }
         else
         {
-            logic.musicScript.playPointsSound();
+            musicScript.PlayPointsSound();
         }
     }
-    private void applySpecialPowers()
+
+    private void ApplySpecialPowers()
     {
         if (gameObject.name.Contains("Sapphire"))
         {
-            logic.playerScript.shieldScript.activateShield();
+            shieldScript.ActivateShield();
         }
         if (gameObject.name.Contains("Ruby"))
         {
-            logic.activatePointsMultiplier();
+            logic.ActivatePointsMultiplier();
         }
         if (gameObject.name.Contains("Emerald"))
         {
-            logic.spawnerScript.activateSpawnRateMultiplier();
+            spawnerScript.ActivateSpawnRateMultiplier();
         }
     }
 }

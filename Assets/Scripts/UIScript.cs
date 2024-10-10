@@ -2,83 +2,88 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class UIScript : MonoBehaviour
 {
     public bool scalingUp = true;
-
-    public Text textScore;
-    public Text currentScore;
-    public Text highestScore;
-    public Text boostText;
-
-    public Button pauseButton;
+    public TextMeshProUGUI textScore;
+    public TextMeshProUGUI currentScore;
+    public TextMeshProUGUI highestScore;
+    public TextMeshProUGUI boostText;
     public Button playButton;
     public Button replayButton;
+    [SerializeField] Button pauseButton;
+    [SerializeField] GameObject homeScreen;
+    [SerializeField] GameObject tutorialScreen;
+    [SerializeField] GameObject pauseScreen;
+    [SerializeField] GameObject gameOverScreen;
+    [SerializeField] LogicScript logic;
 
-    public GameObject homeScreen;
-    public GameObject tutorialScreen;
-    public GameObject pauseScreen;
-    public GameObject gameOverScreen;
-
-    public LogicScript logic;
-
-    private void Awake()
-    {
-        logic = GetComponent<LogicScript>();
-    }
     void Start()
     {
-        initializeUI();
+        InitializeUI();
     }
-    public void initializeUI()
+
+    public void InitializeUI()
     {
         highestScore.text = logic.highScore.ToString();
-        openMainMenu();
+        OpenMainMenu();
     }
-    public void displayBoost()
+
+    public void DisplayBoost(string text)
     {
+        boostText.text = text;
         boostText.gameObject.SetActive(true);
     }
-    public void hideBoost()
+
+    public void HideBoost()
     {
         boostText.gameObject.SetActive(false);
     }
-    public void openGameOverScreen()
+
+    public void OpenGameOverScreen()
     {
         gameOverScreen.SetActive(true);
         pauseButton.gameObject.SetActive(false);
     }
-    public void closeGameOverScreen()
+
+    public void CloseGameOverScreen()
     {
         gameOverScreen.SetActive(false);
         pauseButton.gameObject.SetActive(true);
     }
-    public void openTutorialcreen()
+
+    public void OpenTutorialcreen()
     {
         tutorialScreen.SetActive(true);
     }
-    public void closeTutorialScreen()
+
+    public void CloseTutorialScreen()
     {
         tutorialScreen.SetActive(false);
     }
-    public void openPauseScreen()
+
+    public void OpenPauseScreen()
     {
         pauseScreen.SetActive(true);
         pauseButton.gameObject.SetActive(false);
     }
-    public void closePauseScreen()
+
+    public void ClosePauseScreen()
     {
         pauseScreen.SetActive(false);
         pauseButton.gameObject.SetActive(true);
     }
-    public void openMainMenu()
+
+    public void OpenMainMenu()
     {
         homeScreen.SetActive(true);
         pauseButton.gameObject.SetActive(false);
         textScore.gameObject.SetActive(false);
     }
-    public void closeMainMenu()
+
+    public void CloseMainMenu()
     {
         homeScreen.SetActive(false);
         pauseButton.gameObject.SetActive(true);

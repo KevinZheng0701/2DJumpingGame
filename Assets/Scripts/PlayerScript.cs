@@ -7,61 +7,61 @@ public class PlayerScript : MonoBehaviour
     public bool playerStatus = true;
     public bool inScreen;
     public float velocitySpeed = 10;
-    public Rigidbody2D rigidBody;
-    public Animator animator;
+    [SerializeField] Rigidbody2D rigidBody;
+    [SerializeField] Animator animator;
+    [SerializeField] GameObject shield;
+    [SerializeField] ShieldScript shieldScript;
+    [SerializeField] LogicScript logic;
+    [SerializeField] MusicScript musicScript;
 
-    public GameObject shield;
-
-    public ShieldScript shieldScript;
-    public LogicScript logic;
-    private void Awake()
-    {
-        shieldScript = gameObject.GetComponentInChildren<ShieldScript>();
-        logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LogicScript>();
-    }
     void Start()
     {
-        pausePlayer();
+        PausePlayer();
     }
+
     void Update()
     {
         inScreen = transform.position.y < 12 && transform.position.y > -12;
         if (Input.GetKeyDown(KeyCode.Space) && playerStatus)
         {
             rigidBody.velocity = Vector2.up * velocitySpeed;
-            logic.musicScript.playJumpSound();
+            musicScript.PlayJumpSound();
         }
         if (!inScreen && !logic.gameOverTriggered)
         {
-            logic.gameOver();
-            pausePlayer();
+            logic.GameOver();
+            PausePlayer();
         }
     }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (!logic.gameOverTriggered)
         {
-            logic.gameOver();
+            logic.GameOver();
             rigidBody.freezeRotation = true;
-            pausePlayer();
+            PausePlayer();
         }
     }
-    public void pausePlayer()
+
+    public void PausePlayer()
     {
         playerStatus = false;
         rigidBody.gravityScale = 0;
         rigidBody.velocity = Vector2.zero;
         animator.SetBool("Move", false);
     }
-    public void unPausePlayer()
+
+    public void UnPausePlayer()
     {
         playerStatus = true;
         rigidBody.gravityScale = 2;
         animator.SetBool("Move", true);
     }
-    public void resetPlayer()
+
+    public void ResetPlayer()
     {
         transform.position = new Vector3(-10, 0, 0);
-        unPausePlayer();
+        UnPausePlayer();
     }
 }
