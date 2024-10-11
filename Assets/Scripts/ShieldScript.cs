@@ -6,8 +6,7 @@ public class ShieldScript : MonoBehaviour
 {
     public bool shieldStatus = false;
     private float shieldDuration = 10;
-    private float remainingTime = 0;
-    private float activationTime;
+    private float timer;
     [SerializeField] Animator animator;
     [SerializeField] LogicScript logic;
     [SerializeField] MusicScript musicScript;
@@ -28,8 +27,8 @@ public class ShieldScript : MonoBehaviour
         }
         if (shieldStatus && !logic.isPaused)
         {
-            remainingTime = logic.CalculateRemainingTime(activationTime, shieldDuration);
-            if (remainingTime <= 0)
+            timer += Time.deltaTime;
+            if (timer >= shieldDuration)
             {
                 DeactivateShield();
             }
@@ -41,7 +40,6 @@ public class ShieldScript : MonoBehaviour
         shieldStatus = true;
         animator.SetBool("ShieldActivated", true);
         gameObject.SetActive(true);
-        activationTime = Time.time;
         musicScript.PlayShieldSound();
         uiScript.DisplayBoost("Shield Activated");
     }
@@ -53,6 +51,7 @@ public class ShieldScript : MonoBehaviour
         StartCoroutine(delayDeactivation());
         musicScript.PlayBreakShieldSound();
         uiScript.HideBoost();
+        timer = 0;
     }
 
     public IEnumerator delayDeactivation()

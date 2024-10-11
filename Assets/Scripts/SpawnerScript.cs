@@ -12,16 +12,12 @@ public class SpawnerScript : MonoBehaviour
     public float oreSpawnRate = 2;
     public float gemSpawnRate = 15;
     public float asteriodSpawnRate = 5;
-    private float spawnRateMultiplier = 2;
-    private float spawnMultiplierDuration = 10;
-    private float activationTime;
-    [SerializeField] private float remainingTime = 0;
+    private float timer;
     private float oreTimer;
     private float gemTimer;
     private float asteroidTimer;
-    private float lastOreSpawnTime;
-    private float lastGemSpawnTime;
-    private float lastAsteroidSpawnTime;
+    private float spawnRateMultiplier = 2;
+    private float spawnMultiplierDuration = 10;
     [SerializeField] LogicScript logic;
     [SerializeField] UIScript uiScript;
 
@@ -33,17 +29,13 @@ public class SpawnerScript : MonoBehaviour
 
     void Update()
     {
-        if (logic.gameOverTriggered)
-        {
-            StopSpawning();
-        }
         if (spawner)
         {
             Spawn();
-            if (spawnMultiplierActive && !logic.isPaused)
+            if (spawnMultiplierActive)
             {
-                remainingTime = logic.CalculateRemainingTime(activationTime, spawnMultiplierDuration);
-                if (remainingTime <= 0)
+                timer += Time.deltaTime;
+                if (timer >= spawnMultiplierDuration)
                 {
                     DeactivateSpawnRateMultiplier();
                 }
@@ -53,24 +45,27 @@ public class SpawnerScript : MonoBehaviour
 
     private void PlayClicked()
     {
-        lastOreSpawnTime = Time.time;
-        lastAsteroidSpawnTime = Time.time;
-        lastGemSpawnTime = Time.time;
         SpawnOre();
     }
 
-    private void StopSpawning()
+    public void StopSpawning()
     {
         spawner = false;
         DeactivateSpawnRateMultiplier();
     }
 
+    public void ResetSpawnTime()
+    {
+        oreTimer = 0;
+        gemTimer = 0;
+        asteroidTimer = 0;
+    }
+
     private void Spawn()
     {
-        float currentTime = Time.time;
-        oreTimer = currentTime - lastOreSpawnTime;
-        gemTimer = currentTime - lastGemSpawnTime;
-        asteroidTimer = currentTime - lastAsteroidSpawnTime;
+        oreTimer += Time.deltaTime;
+        gemTimer += Time.deltaTime;
+        asteroidTimer += Time.deltaTime;
         if (oreTimer >= oreSpawnRate)
         {
             SpawnOre();
@@ -98,8 +93,6 @@ public class SpawnerScript : MonoBehaviour
         Vector3 orePosition = CreateRandomPosition();
         GameObject spawnedOre = Instantiate(ore, orePosition, oreRotation);
         spawnedOre.transform.localScale = oreScale;
-        lastOreSpawnTime = Time.time;
-
     }
 
     private void SpawnGem()
@@ -112,7 +105,6 @@ public class SpawnerScript : MonoBehaviour
         Vector3 gemPosition = CreateRandomPosition();
         GameObject spawnedGem = Instantiate(gem, gemPosition, gemRotation);
         spawnedGem.transform.localScale = gemScale;
-        lastGemSpawnTime = Time.time;
     }
 
     private void SpawnAsteroid()
@@ -122,7 +114,6 @@ public class SpawnerScript : MonoBehaviour
         Vector3 asteroidPosition = CreateRandomPosition();
         GameObject spawnedAsteroid = Instantiate(asteroid, asteroidPosition, asteroidRotation);
         spawnedAsteroid.transform.localScale = asteroidScale;
-        lastAsteroidSpawnTime = Time.time;
     }
 
     private Vector3 CreateRandomScale()
@@ -147,8 +138,6 @@ public class SpawnerScript : MonoBehaviour
     {
         oreSpawnRate /= spawnRateMultiplier;
         spawnMultiplierActive = true;
-        spawnMultiplierDuration = 10;
-        activationTime = Time.time;
         uiScript.DisplayBoost("Double Spawn Rate");
     }
 
@@ -156,7 +145,7 @@ public class SpawnerScript : MonoBehaviour
     {
         oreSpawnRate = 2;
         spawnMultiplierActive = false;
-        spawnMultiplierDuration = 0;
         uiScript.HideBoost();
+        timer = 0;
     }
 }

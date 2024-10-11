@@ -11,8 +11,7 @@ public class LogicScript : MonoBehaviour
     public int playerScore = 0;
     public int highScore;
     private float pointsDuration = 10;
-    private float remainingTime = 0;
-    private float activationTime;
+    private float boostTimer = 0;
     [SerializeField] GameObject asteroid;
     [SerializeField] PlayerScript playerScript;
     [SerializeField] SpawnerScript spawnerScript;
@@ -29,8 +28,8 @@ public class LogicScript : MonoBehaviour
     {
         if (pointBoostedActivated && !isPaused)
         {
-            remainingTime = CalculateRemainingTime(activationTime, pointsDuration);
-            if (remainingTime <= 0)
+            boostTimer += Time.deltaTime;
+            if (boostTimer >= pointsDuration)
             {
                 DeactivatePointsMultipler();
             }
@@ -90,6 +89,8 @@ public class LogicScript : MonoBehaviour
         playerScript.PausePlayer();
         musicScript.PlayGameOverSound();
         uiScript.OpenGameOverScreen();
+        spawnerScript.StopSpawning();
+        spawnerScript.ResetSpawnTime();
         UpdateCurrentScore();
         UpdateHighScore();
     }
@@ -105,14 +106,14 @@ public class LogicScript : MonoBehaviour
         if (playerScript.playerStatus)
         {
             playerScript.PausePlayer();
-            isPaused = true;
             uiScript.OpenPauseScreen();
+            isPaused = true;
         }
         else
         {
             playerScript.UnPausePlayer();
-            isPaused = false;
             uiScript.ClosePauseScreen();
+            isPaused = false;
         }
         UpdateCurrentScore();
         UpdateHighScore();
@@ -120,7 +121,6 @@ public class LogicScript : MonoBehaviour
 
     public void ActivatePointsMultiplier()
     {
-        activationTime = Time.time;
         pointBoostedActivated = true;
         uiScript.DisplayBoost("Double Points");
     }
@@ -129,10 +129,6 @@ public class LogicScript : MonoBehaviour
     {
         pointBoostedActivated = false;
         uiScript.HideBoost();
-    }
-
-    public float CalculateRemainingTime(float activationTime, float duration)
-    {
-        return activationTime + duration - Time.time;
+        boostTimer = 0;
     }
 }

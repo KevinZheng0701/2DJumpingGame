@@ -2305,7 +2305,7 @@ Transform:
   m_GameObject: {fileID: 1084698684}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -9.7, y: 0, z: 0}
+  m_LocalPosition: {x: -9, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5436,7 +5436,6 @@ MonoBehaviour:
   oreSpawnRate: 2
   gemSpawnRate: 11
   asteriodSpawnRate: 5
-  remainingTime: 0
   logic: {fileID: 2038549572}
   uiScript: {fileID: 2038549574}
 --- !u!4 &2019348937
